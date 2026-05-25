@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES
+   ============================================================ */
+:root {
+  --primary: #D4521A;
+  --primary-light: #FFF3EC;
+  --primary-dark: #A83E12;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --bg-default: #F3F4F6;
+  --bg-card: #FFFFFF;
+  --border: #E5E7EB;
+  --mobile-nav-height: 72px;
+  --desktop-sidebar-width: 260px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background-color: var(--bg-default);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+.app-shell {
+  max-width: 100%;
+  min-height: 100dvh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   DESKTOP LAYOUT
+   ============================================================ */
+.desktop-layout {
+  display: flex;
+  min-height: 100dvh;
+}
+
+/* Mobile: no sidebar */
+.desktop-sidebar { display: none; }
+
+.desktop-main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  padding-bottom: calc(var(--mobile-nav-height) + 16px + var(--safe-bottom));
+}
+
+.mobile-bottom-nav { display: block; }
+
+@media (min-width: 1024px) {
+  .desktop-sidebar {
+    display: flex;
+    flex-direction: column;
+    width: var(--desktop-sidebar-width);
+    min-height: 100dvh;
+    background: #ffffff;
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 40;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .desktop-main {
+    margin-left: var(--desktop-sidebar-width);
+    padding-bottom: 48px;
+  }
+
+  .desktop-main [class*="pt-12"],
+  .desktop-main [class*="pt-14"] {
+    padding-top: 2rem !important;
+  }
+
+  .mobile-bottom-nav { display: none; }
+}
+
+/* ============================================================
+   SCROLLBAR HIDE
+   ============================================================ */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   SKELETON SHIMMER
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* ============================================================
+   HEART WISHLIST ANIMATION
+   ============================================================ */
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.4); }
+  60%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.heart-pop {
+  animation: heartPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* ============================================================
+   FOOD CARD
+   ============================================================ */
+.food-card {
+  @apply bg-white rounded-2xl shadow-card overflow-hidden transition-all duration-200;
+}
+.food-card:active { transform: scale(0.99); }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-primary {
+  @apply w-full bg-primary-500 text-white font-semibold py-4 rounded-2xl
+         text-base transition-all duration-200 shadow-btn
+         active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed
+         flex items-center justify-center;
+  font-family: var(--font-poppins);
+}
+.btn-primary:hover:not(:disabled) { background-color: var(--primary-dark); }
+
+.btn-ghost {
+  @apply bg-transparent text-primary-500 font-medium py-3 px-4 rounded-xl
+         transition-all duration-200 active:scale-95;
+}
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+.input-field {
+  @apply w-full bg-gray-100 rounded-2xl pl-12 px-5 py-4 text-gray-800
+         placeholder-gray-400 text-sm outline-none transition-all duration-200;
+  font-family: var(--font-roboto);
+}
+.input-field:focus { @apply ring-2 ring-primary-300 bg-white; }
+
+/* ============================================================
+   CATEGORY CHIPS
+   ============================================================ */
+.category-chip {
+  @apply px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap
+         transition-all duration-200 cursor-pointer;
+}
+.category-chip.active  { @apply bg-primary-500 text-white; }
+.category-chip:not(.active) { @apply bg-white text-gray-600 hover:bg-gray-100; }
+
+/* ============================================================
+   QTY BUTTONS
+   ============================================================ */
+.qty-btn {
+  @apply w-9 h-9 rounded-full flex items-center justify-center
+         text-xl font-bold transition-transform duration-150 active:scale-90;
+}
+.qty-btn-minus { @apply qty-btn bg-orange-100 text-primary-500; }
+.qty-btn-plus  { @apply qty-btn bg-primary-500 text-white; }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+.animate-fade-in  { animation: fadeIn  0.2s ease-out; }
