@@ -7,6 +7,10 @@ import {
   ArrowLeft,
   AlertCircle,
   CreditCard,
+  Calendar,
+  User,
+  Phone,
+  ShieldCheck,
 } from 'lucide-react';
 
 import { useOrders } from '@/lib/hooks/use-api';
@@ -38,6 +42,13 @@ export default function OrderDetailsPage() {
       0
     );
   }, [batch]);
+
+  const rider = useMemo(() => {
+    return (batch?.orders?.find(
+      (order: any) => order.rider
+    ) as any)?.rider || null;
+  }, [batch]);
+
 
 
 
@@ -129,20 +140,84 @@ export default function OrderDetailsPage() {
         </div>
 
         {/* NOTICE */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 flex gap-3">
-          <AlertCircle
-            size={18}
-            className="text-gray-500 mt-0.5"
-          />
+        {/* RIDER INFO / NOTICE */}
+        {rider ? (
+          <div className="rounded-3xl border border-[#D8EDE5] bg-[#F3FBF7] p-5">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck
+                  size={22}
+                  className="text-[#0D6B50]"
+                />
 
-          <p className="text-sm text-gray-600">
-            Rider allocation assignment
-            sequence processing.
-            Dispatched partner contact
-            data will appear here once
-            the batch is locked.
-          </p>
-        </div>
+                <span className="font-semibold text-[#0D6B50]">
+                  Courier Dispatched
+                </span>
+              </div>
+
+              <a
+                href={`tel:${rider.phone}`}
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#18C37E]"
+              >
+                <Phone
+                  size={20}
+                  className="text-white"
+                />
+              </a>
+            </div>
+
+            {/* Rider */}
+            <div className="mt-6 flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#DDEFE9]">
+                <User
+                  size={28}
+                  className="text-[#0D6B50]"
+                />
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  {rider.fullName}
+                </h3>
+
+                <p className="text-gray-500 capitalize">
+                  {rider.role} • {rider.gender}
+                </p>
+              </div>
+            </div>
+
+            <div className="my-5 h-px bg-[#D8EDE5]" />
+
+            {/* ETA */}
+            <div className="flex items-center gap-3">
+              <Calendar
+                size={22}
+                className="text-gray-700"
+              />
+
+              <p className="text-gray-600">
+                ETA Promise:{" "}
+                <span className="font-bold text-gray-900">
+                  {rider.eta}
+                </span>
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex gap-3">
+            <AlertCircle
+              size={18}
+              className="text-gray-500 mt-0.5"
+            />
+
+            <p className="text-sm text-gray-600">
+              Rider allocation assignment sequence processing.
+              Dispatched partner contact data will appear here
+              once the batch is locked.
+            </p>
+          </div>
+        )}
 
         {/* TITLE */}
         <div>

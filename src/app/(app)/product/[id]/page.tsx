@@ -3,13 +3,14 @@
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Star, ChevronDown, ShoppingCart } from 'lucide-react';
-import { useAddToCart, useFoodDetail, useRateProduct, useRatings } from '@/lib/hooks/use-api';
+import { useAddToCart, useFoodDetail, useProductCategory, useRateProduct, useRatings } from '@/lib/hooks/use-api';
 import WishlistButton from '@/components/food/WishlistButton';
 import { Modal } from '@/components/ui/Sheet';
 import { formatNaira, getInitials } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { getDistanceAndTime } from '@/lib/utils/location';
+import PairingFoodCard from '@/components/food/PairingFoodCard';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +27,8 @@ export default function ProductDetailPage() {
   const [time, setTime] = useState<string | null>(null);
 
   const { data: food, isLoading } = useFoodDetail(id);
+  const category:any = food?.productCategory;
+  const {data: suggestedFood} = useProductCategory(category);
   const { data: ratings } = useRatings(food?._id || '');
 
   const rates = (ratings as any)?.ratingsWithUserPhoto;
@@ -388,16 +391,16 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Pairing suggestions */}
-        {/* {food.pairingSuggestions && food.pairingSuggestions.length > 0 && (
+        {(suggestedFood as any)?.length > 0 && (
           <div className="mt-10">
             <h2 className="font-bold text-gray-900 text-lg mb-4">Pairing Suggestions</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-              {food.pairingSuggestions.map((item) => (
-                <FoodCard key={item.id} food={item} />
+              {suggestedFood?.map((item) => (
+                <PairingFoodCard key={item._id} food={item} />
               ))}
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

@@ -119,6 +119,14 @@ export const STAMP_ENDPOINTS = {
 	GET: "/stamp/getuserstampcount",
 } as const;
 
+// ============================================================
+// CATEGORY ENDPOINTS	
+// ============================================================
+
+export const CATEGORY_ENDPOINTS ={
+	GET_CATEGORY: "/api/categories",
+	GET_PRODUCT_CATEGORY:(category: string)=>`/product/getproductsbycategory?category=${category}`
+}
 
 // ============================================================
 // REWARD ENDPOINTS
@@ -160,4 +168,6 @@ export const QUERY_KEYS = {
 	WISHLIST: ["wishlist"] as const,
 	STAMP_COUNT: ["stamps"] as const,
 	REWARDS: ["rewards"] as const,
+	CATEGORY: ["category"] as const,
+	PRODUCT_CATEGORY: (category: string) => ["product_category", category] as const,
 } as const;

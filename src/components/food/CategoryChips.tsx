@@ -1,16 +1,9 @@
 'use client';
 
+import { useCategory } from '@/lib/hooks/use-api';
 import { cn } from '@/lib/utils';
 import type { FoodCategory } from '@/types';
-
-const CATEGORIES: { id: FoodCategory; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'fries', label: 'Fries' },
-  { id: 'swallows', label: 'Swallows' },
-  { id: 'rice', label: 'Rice' },
-  { id: 'drinks', label: 'Drinks' },
-  { id: 'soup', label: 'Soup' },
-];
+import { useMemo } from 'react';
 
 interface CategoryChipsProps {
   active: FoodCategory;
@@ -18,15 +11,29 @@ interface CategoryChipsProps {
 }
 
 export default function CategoryChips({ active, onChange }: CategoryChipsProps) {
+
+  const {data: CATEGORIES}= useCategory();
+
+   const categories = useMemo(
+    () => [
+      {
+        id: 'all',
+        name: 'All',
+      },
+      ...(CATEGORIES?.data || []),
+    ],
+    [CATEGORIES]
+  );
+  
   return (
     <div className="flex gap-2.5 overflow-x-auto scrollbar-hide -mx-5 px-5 py-2">
-      {CATEGORIES.map(({ id, label }) => (
+      {categories?.map((category:any) => (
         <button
-          key={id}
-          onClick={() => onChange(id)}
-          className={cn('category-chip flex-shrink-0', id === active && 'active')}
+          key={category.id}
+          onClick={() => onChange(category.id)}
+          className={cn('category-chip bg-gray-400 flex-shrink-0', category.id === active && 'active')}
         >
-          {label}
+          {category.name}
         </button>
       ))}
     </div>

@@ -18,6 +18,7 @@ import {
 	notificationService,
 	rewardRedemptionService,
 	rewardService,
+	category,
 } from "@/lib/api/services";
 import { setTokens, clearTokens } from "@/lib/api/client";
 import type {
@@ -290,12 +291,13 @@ export function useRemoveCartItem() {
 	return useMutation({
 		mutationFn: (itemId: string) =>
 			cartService.removeItem(itemId).then((r) => r.data.data),
+		
 		onSuccess: async (updated: any) => {
-			toast.success(updated?.message || "Item removed from cart");
 			queryClient.setQueryData(QUERY_KEYS.CART, updated);
 			await queryClient.invalidateQueries({
-				queryKey: QUERY_KEYS.CART,
+				queryKey: QUERY_KEYS.CART
 			});
+			toast.success(updated?.message || "Item removed from cart");
 		},
 		onError: (error) => {
 			toast.error(error.message || "Failed to remove item from cart");
@@ -467,4 +469,29 @@ export function useClaimReward() {
 			);
 		},
 	});
+}
+
+// ──────────────────────────────────────────────
+// CATEGORY SERVICES
+// ──────────────────────────────────────────────
+
+export function useCategory() {
+	return useQuery({
+		queryKey: QUERY_KEYS.CATEGORY,
+		queryFn: async () => {
+			return category.getCategory().then((r) => {
+				console.log("Category data:", r.data);
+				return r.data;
+			});
+		},
+	});
+}
+
+export function useProductCategory(categories:string){
+	return useQuery({
+		queryKey: QUERY_KEYS.PRODUCT_CATEGORY(categories),
+		queryFn: async () =>{
+			return category.getProductCategory(categories).then((r)=> r.data)
+		}
+	})
 }

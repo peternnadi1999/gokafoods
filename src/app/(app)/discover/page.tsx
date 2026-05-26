@@ -75,12 +75,12 @@ export default function DiscoverPage() {
             <div className="flex gap-2">
               {/* Updated button to navigate to Verified Stores page */}
               <Link href="/verified-stores">
-                <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-card">
-                  <Store size={20} className="text-gray-700" />
+                <button className="w-9 h-9 rounded-full flex items-center justify-center">
+                  <Store size={25} fill='black' className="text-white" />
                 </button>
               </Link>
-              <Link href="/notifications" className="w-8 h-8 bg-white relative rounded-full flex items-center justify-center shadow-card">
-                <Bell size={20} className="text-gray-700" />
+              <Link href="/notifications" className="w-8 h-8 bg-black relative rounded-full flex items-center justify-center shadow-card">
+                <Bell size={20} fill='white' className="text-white" />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {unreadCount > 9 ? '9+' : unreadCount}
@@ -133,7 +133,9 @@ export default function DiscoverPage() {
           <section className="mt-5 mb-7">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-bold text-gray-900">Featured</h2>
-              <button className="text-primary-500 text-sm font-medium">See all</button>
+              <Link href="/featured" className="text-primary-500 text-sm font-medium">
+                See all
+              </Link>
             </div>
             <FeaturedCarousel foods={displayFoods.slice(0, 3)} loading={foodsLoading} />
           </section>
@@ -146,7 +148,9 @@ export default function DiscoverPage() {
               {debouncedQuery ? `Results for "${debouncedQuery}"` : 'Food Finds You'}
             </h2>
             {!debouncedQuery && (
-              <button className="text-primary-500 text-sm font-medium">See all</button>
+              <Link href="/foods" className="text-primary-500 text-sm font-medium">
+                See all
+              </Link>
             )}
           </div>
 
@@ -154,7 +158,7 @@ export default function DiscoverPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
             {foodsLoading
               ? Array.from({ length: 8 }).map((_, i) => <FoodCardSkeleton key={i} />)
-              : displayFoods.map((food:any) => <FoodCard key={food._id} food={food} />)}
+              : displayFoods.slice(0, 4).map((food:any) => <FoodCard key={food._id} food={food} />)}
           </div>
 
           {!foodsLoading && displayFoods.length === 0 && (

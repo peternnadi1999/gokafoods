@@ -11,6 +11,7 @@ import {
   STAMP_ENDPOINTS,
   NOTIFICATION_ENDPOINTS,
   REWARD_ENDPOINTS,
+  CATEGORY_ENDPOINTS,
 } from './endpoints';
 import type {
   ApiResponse,
@@ -218,6 +219,16 @@ export const notificationService = {
   markAsRead: (broadcastId: string) =>
     apiClient.put<ApiResponse<null>>(NOTIFICATION_ENDPOINTS.MARK_AS_READ(broadcastId)),
 };
+
+// ============================================================
+// CATEGORY SERVICES
+// ============================================================
+
+export const category = {
+  getCategory: () => apiClient.get<ApiResponse<any>>(CATEGORY_ENDPOINTS.GET_CATEGORY),
+  getProductCategory: (category: string)=> apiClient.get<FoodItem[]>(CATEGORY_ENDPOINTS.GET_PRODUCT_CATEGORY(category))
+}
+
 
 // ============================================================
 // EMAIL VERIFICATION SERVICES

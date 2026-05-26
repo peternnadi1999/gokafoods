@@ -31,17 +31,10 @@ export default function NotificationsPage() {
 		);
 	}
 
-	if (isError) {
-		return (
-			<div className="min-h-screen bg-gray-50 px-5 lg:px-8 py-10 max-w-screen-xl mx-auto">
-				<p className="text-red-500">Unable to load notifications. Please try again later.</p>
-			</div>
-		);
-	}
 
 	return (
 		<div className="min-h-screen bg-gray-50 px-5 lg:px-8 py-10 max-w-screen-xl mx-auto">
-			<div className="mb-8">
+			<div className="mb-8 border-b border-gray-200 pb-5">
 				<h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
 				<p className="text-sm text-gray-500 mt-2">
 					{unreadCount > 0
@@ -51,7 +44,7 @@ export default function NotificationsPage() {
 			</div>
 
 			{!Array.isArray(notifications) || notifications.length === 0 ? (
-				<div className="rounded-3xl bg-white p-8 shadow-card text-center">
+				<div className="p-8 text-center">
 					<p className="text-gray-500">No notifications yet.</p>
 				</div>
 			) : (

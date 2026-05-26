@@ -149,9 +149,9 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-gray-100 px-5 lg:px-8 py-6 max-w-screen-xl mx-auto">
         <div className="h-8 w-1/3 skeleton rounded mb-6" />
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-3 flex items-center gap-3 h-24">
+            <div key={i} className="bg-white rounded-2xl p-3 flex items-center gap-3 h-32">
               <div className="w-20 h-[72px] rounded-xl skeleton flex-shrink-0" />
               <div className="flex-1 space-y-2">
                 <div className="h-3.5 w-3/4 skeleton rounded" />
