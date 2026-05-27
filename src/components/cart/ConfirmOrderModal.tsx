@@ -11,6 +11,7 @@ const PaystackCheckoutButton = dynamic(
 );
 import { CartItemresponse } from '@/types';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface ConfirmOrderModalProps {
   open: boolean;
@@ -56,41 +57,44 @@ export default function ConfirmOrderModal({
     method: 'card' | 'balance'
   ) => {
     if (method === 'balance') {
-      initiateOrder({
-        cartItems: cartItems.map((item: any) => ({
-          _id: item._id,
-          quantity: quantities[item._id] ?? item.quantity ?? 1,
-          partnerLocationTitle:
-            item?.partnerId.location || {},
-          partnerCoordinates:
-            item?.partnerId.coordinates || {},
-          addressDetails:
-            confirmDetails.deliveryAddress || {},
-        })),
-        uniqueKey: localStorage.getItem(
+      try {
+        initiateOrder({
+          cartItems: cartItems.map((item: any) => ({
+            _id: item._id,
+            quantity: quantities[item._id] ?? item.quantity ?? 1,
+            partnerLocationTitle:
+              item?.partnerId.location || {},
+            partnerCoordinates:
+              item?.partnerId.coordinates || {},
+            addressDetails:
+              confirmDetails.deliveryAddress || {},
+          })),
+          uniqueKey: localStorage.getItem(
+            'order_unique_key'
+          ),
+          promoKey: "",
+          amount: totalCost,
+          paidWith: 'balance',
+          reference: `PAY-${Date.now()}-${user?._id}`,
+          useBalance: true,
+          location: {
+            address: confirmDetails.deliveryAddress,
+            lat: userLocation.lat,
+            lng: userLocation.lng,
+          },
+        });
+
+        localStorage.removeItem(
           'order_unique_key'
-        ),
-        promoKey: "",
-        amount: totalCost,
-        paidWith: 'balance',
-        reference: `PAY-${Date.now()}-${user?._id}`,
-        useBalance: true,
-        location: {
-          address: confirmDetails.deliveryAddress,
-          lat: userLocation.lat,
-          lng: userLocation.lng,
-        },
-      });
+        );
 
-      localStorage.removeItem(
-        'order_unique_key'
-      );
-
-      clearCart();
-      onClose();
-      router.push('/orders');
+        clearCart();
+        onClose();
+        router.push('/orders');
+      } catch (error: any) {
+        toast.error(error);
+      }
     }
-
     setShowPaymentModal(false);
   };
 
@@ -254,11 +258,12 @@ export default function ConfirmOrderModal({
                 </div>
               </button>
 
-                <PaystackCheckoutButton
-                  email={user?.userEmail || ''}
-                  amount={cardPaymentAmount}
-                  userId={user?._id || ''}
-                  onSuccess={(reference) => {
+              <PaystackCheckoutButton
+                email={user?.userEmail || ''}
+                amount={cardPaymentAmount}
+                userId={user?._id || ''}
+                onSuccess={(reference) => {
+                  try {
                     initiateOrder({
                       cartItems: cartItems.map((item: any) => ({
                         _id: item._id,
@@ -290,24 +295,28 @@ export default function ConfirmOrderModal({
                     clearCart();
                     onClose();
                     router.push('/orders');
-                  }}
-                  onClose={() => {
-                    onClose();
-                  }}
-                  className="w-full border border-gray-200 rounded-2xl p-4 flex items-center gap-4 hover:border-primary-500 transition"
-                >
-                  <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center">
-                    <CreditCard className="text-primary-500" />
-                  </div>
+                  } catch (error: any) {
+                    toast.error(error);
 
-                  <div className="text-left">
-                    <p className="font-semibold text-gray-900">Pay with Card</p>
+                  }
+                }}
+                onClose={() => {
+                  onClose();
+                }}
+                className="w-full border border-gray-200 rounded-2xl p-4 flex items-center gap-4 hover:border-primary-500 transition"
+              >
+                <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center">
+                  <CreditCard className="text-primary-500" />
+                </div>
 
-                    <p className="text-sm text-gray-500">
-                      Secure online payment
-                    </p>
-                  </div>
-                </PaystackCheckoutButton>
+                <div className="text-left">
+                  <p className="font-semibold text-gray-900">Pay with Card</p>
+
+                  <p className="text-sm text-gray-500">
+                    Secure online payment
+                  </p>
+                </div>
+              </PaystackCheckoutButton>
             </div>
 
             {/* Cancel */}

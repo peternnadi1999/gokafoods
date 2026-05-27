@@ -5,6 +5,9 @@ import { usePathname } from 'next/navigation';
 import { Home, Heart, ShoppingCart, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/lib/hooks/use-api';
+import { useEffect, useState } from 'react';
+import { getCurrentPosition } from '@/lib/utils/location';
+import { toast } from 'sonner';
 
 const navItems = [
   { href: '/discover', label: 'Discover', icon: Home },
@@ -15,9 +18,24 @@ const navItems = [
 
 export default function BottomNav() {
   const pathname = usePathname();
-  const {data:cartData} = useCart();
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const { data: cartData } = useCart(userLocation?.lat, userLocation?.lng);
 
-  const cartCount =( cartData as any)?.count ?? 0;
+  const cartCount = (cartData as any)?.count ?? 0;
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+
+        const location = await getCurrentPosition();
+        setUserLocation(location);
+      } catch (error) {
+        toast.error('Unable to get your location');
+      }
+    };
+
+    fetchLocation();
+  }, []);
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white shadow-nav z-50 bottom-nav">

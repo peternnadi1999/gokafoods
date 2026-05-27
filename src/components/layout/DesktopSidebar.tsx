@@ -17,6 +17,8 @@ import { cn, getInitials } from '@/lib/utils';
 import { useCart, useLogout, useProfile, useUnreadNotificationCount } from '@/lib/hooks/use-api';
 import { toast } from 'sonner';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { getCurrentPosition } from '@/lib/utils/location';
 
 const NAV_ITEMS = [
   { href: '/discover', label: 'Discover', icon: Home },
@@ -34,14 +36,29 @@ const BOTTOM_ITEMS = [
 export default function DesktopSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: cartData } = useCart();
-   const {data: unreadCount }= useUnreadNotificationCount();
+  const {data: unreadCount }= useUnreadNotificationCount();
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const { data: cartData } = useCart(userLocation?.lat, userLocation?.lng);
 
   const cartCount = (cartData as any)?.count ?? 0
 
   const { mutateAsync: logout } = useLogout();
   const { data: profile } = useProfile();
   const user = profile?.user;
+
+  useEffect(() => {
+      const fetchLocation = async () => {
+        try {
+
+          const location = await getCurrentPosition();
+          setUserLocation(location);
+        } catch (error) {
+          toast.error('Unable to get your location');
+        }
+      };
+  
+      fetchLocation();
+    }, []);
 
   const handleLogout = async () => {
     await logout();

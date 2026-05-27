@@ -13,7 +13,6 @@ import ConfirmOrderModal from '@/components/cart/ConfirmOrderModal';
 import LocationModal from '@/components/cart/LocationModal';
 
 export default function CartPage() {
-  const { data: itemsData, isLoading } = useCart();
   const { mutateAsync: serverRemove } = useRemoveCartItem();
   const { mutateAsync: serverClear } = useClearCart();
   const [confirmDetails, setConfirmDetails] = useState(null);
@@ -22,16 +21,22 @@ export default function CartPage() {
   >({});
   const { mutateAsync: serverConfirmCost } = useConfirmOrderCost()
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(true);
   const [showLocationModal, setShowLocationModal] =
     useState(false);
+  const { data: itemsData, isLoading } = useCart(userLocation?.lat, userLocation?.lng);
 
   useEffect(() => {
     const fetchLocation = async () => {
       try {
+
+        setIsGettingLocation(true);
         const location = await getCurrentPosition();
         setUserLocation(location);
       } catch (error) {
         toast.error('Unable to get your location');
+      } finally {
+        setIsGettingLocation(false);
       }
     };
 
@@ -128,7 +133,7 @@ export default function CartPage() {
         lng: selectedLocation.lng,
         uniqueKey,
       });
-      
+
     } catch (error: any) {
       console.error('Order confirmation failed:', error);
       toast.error(error.message || 'Failed to confirm order');
@@ -164,6 +169,23 @@ export default function CartPage() {
       </div>
     );
   }
+
+  if (isGettingLocation) {
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6">
+      <div className="w-16 h-16 rounded-full border-4 border-primary-200 border-t-primary-500 animate-spin" />
+
+      <h2 className="mt-6 text-lg font-semibold text-gray-900">
+        Getting your location...
+      </h2>
+
+      <p className="mt-2 text-sm text-center text-gray-500 max-w-xs">
+        We need your location to calculate delivery distance,
+        estimated arrival time and delivery fees.
+      </p>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-gray-100">

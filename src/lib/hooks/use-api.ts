@@ -238,27 +238,16 @@ export function useFoodSearch(query: string, category?: FoodCategory) {
 // ──────────────────────────────────────────────
 // CART
 // ──────────────────────────────────────────────
-export function useCart() {
+export function useCart(lat?: number, lng?: number) {
 	return useQuery({
-		queryKey: QUERY_KEYS.CART,
+		queryKey: [...QUERY_KEYS.CART, lat, lng],
+
 		queryFn: async () => {
-			const position = await new Promise<GeolocationPosition>(
-				(resolve, reject) => {
-					if (!navigator.geolocation) {
-						reject(new Error("Geolocation is not supported by this browser."));
-						return;
-					}
-
-					navigator.geolocation.getCurrentPosition(resolve, reject);
-				},
-			);
-
-			const { latitude, longitude } = position.coords;
-
-			const response = await cartService.getCart(latitude, longitude);
-
+			const response = await cartService.getCart(lat!, lng!);
 			return response.data;
 		},
+
+		enabled: typeof lat === "number" && typeof lng === "number",
 	});
 }
 
@@ -273,7 +262,8 @@ export function useAddToCart() {
 			quantity: number;
 		}) => cartService.addItem(productId, quantity).then((r) => r.data),
 		onSuccess: async (updated) => {
-			toast.success(updated.message || "Item added to cart");
+			toast.success(updated.message || `Item added to cart 🛒`);
+			
 			queryClient.setQueryData(QUERY_KEYS.CART, updated);
 			await queryClient.invalidateQueries({
 				queryKey: QUERY_KEYS.CART,
@@ -291,13 +281,22 @@ export function useRemoveCartItem() {
 	return useMutation({
 		mutationFn: (itemId: string) =>
 			cartService.removeItem(itemId).then((r) => r.data.data),
-		
-		onSuccess: async (updated: any) => {
-			queryClient.setQueryData(QUERY_KEYS.CART, updated);
-			await queryClient.invalidateQueries({
-				queryKey: QUERY_KEYS.CART
+
+		onSuccess: async (_, itemId) => {
+			queryClient.setQueriesData({ queryKey: QUERY_KEYS.CART }, (old: any) => {
+				if (!old?.data) return old;
+
+				const filteredItems = old.data.filter(
+					(item: any) => item._id !== itemId,
+				);
+
+				return {
+					...old,
+					data: filteredItems,
+					count: filteredItems.length,
+				};
 			});
-			toast.success(updated?.message || "Item removed from cart");
+			toast.success("Item removed from cart");
 		},
 		onError: (error) => {
 			toast.error(error.message || "Failed to remove item from cart");
@@ -310,12 +309,19 @@ export function useClearCart() {
 	return useMutation({
 		mutationFn: () => cartService.clearCart().then((r) => r.data.data),
 		onSuccess: async (result: any) => {
-			queryClient.setQueryData(QUERY_KEYS.CART, {
-				data: [],
-				count: 0,
+			queryClient.setQueriesData(
+				{ queryKey: QUERY_KEYS.CART },
+				{
+					data: [],
+					count: 0,
+				},
+			);
+
+			await queryClient.invalidateQueries({
+				queryKey: QUERY_KEYS.CART,
+				exact: false,
 			});
 			toast.success(result?.message || "Your cart has been cleared");
-			await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CART });
 		},
 		onError: (error) => {
 			toast.error(error.message || "Failed to clear cart");
@@ -394,6 +400,7 @@ export function useToggleWishlist() {
 				: wishlistService.addToWishlist(productId),
 		onSuccess: () =>
 			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.WISHLIST }),
+			
 	});
 }
 
@@ -480,18 +487,17 @@ export function useCategory() {
 		queryKey: QUERY_KEYS.CATEGORY,
 		queryFn: async () => {
 			return category.getCategory().then((r) => {
-				console.log("Category data:", r.data);
 				return r.data;
 			});
 		},
 	});
 }
 
-export function useProductCategory(categories:string){
+export function useProductCategory(categories: string) {
 	return useQuery({
 		queryKey: QUERY_KEYS.PRODUCT_CATEGORY(categories),
-		queryFn: async () =>{
-			return category.getProductCategory(categories).then((r)=> r.data)
-		}
-	})
+		queryFn: async () => {
+			return category.getProductCategory(categories).then((r) => r.data);
+		},
+	});
 }
