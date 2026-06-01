@@ -69,7 +69,7 @@ export default function DiscoverPage() {
             <div>
               <p className="text-gray-500 text-sm font-roboto">Welcome</p>
               <h1 className="text-2xl font-bold text-gray-900">
-                {user?.userName || 'Guest'}
+                {user?.userName?.trim().split(/\s+/)[0]|| 'Guest'}
               </h1>
             </div>
             <div className="flex gap-2">
