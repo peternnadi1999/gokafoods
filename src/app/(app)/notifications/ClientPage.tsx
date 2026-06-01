@@ -86,8 +86,8 @@ export default function NotificationsPage() {
 					<div className="h-8 w-56 skeleton rounded" />
 					<div className="h-4 w-72 skeleton rounded" />
 				</div>
-
 				<div className="space-y-4">
+					
 					{[1, 2].map((item) => (
 						<div key={item} className="rounded-3xl p-5 shadow-card border border-gray-200 bg-white">
 							<div className="flex items-start justify-between gap-4">
