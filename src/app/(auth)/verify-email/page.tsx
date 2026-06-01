@@ -9,6 +9,18 @@ import {
     useEmailVerifiedStatus,
     useResendVerification,
 } from '@/lib/hooks/use-email-verification';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Verify Your Email – GokaFood',
+  description: 'Verify your email address to activate your GokaFood account and start ordering food.',
+  keywords: ['email verification', 'verify email', 'GokaFood account activation'],
+  openGraph: {
+    title: 'Email Verification',
+    description: 'Complete your GokaFood registration by verifying your email.',
+    type: 'website',
+  },
+};
 
 const RESEND_COOLDOWN = 60;
 

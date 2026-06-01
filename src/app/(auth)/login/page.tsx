@@ -12,6 +12,18 @@ import { useLogin } from '@/lib/hooks/use-api';
 import { useResendVerification } from '@/lib/hooks/use-email-verification';
 import { getErrorMessage } from '@/lib/utils';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Login – GokaFood',
+  description: 'Sign in to your GokaFood account to access your orders, wallet, and saved restaurants. Quick and secure login.',
+  keywords: ['GokaFood login', 'sign in', 'user account', 'food delivery login'],
+  openGraph: {
+    title: 'Login to GokaFood',
+    description: 'Access your GokaFood account to track orders and manage your preferences.',
+    type: 'website',
+  },
+};
 
 const schema = z.object({
   userEmail: z.string().email('Enter a valid email address'),

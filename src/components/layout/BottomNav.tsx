@@ -60,7 +60,7 @@ export default function BottomNav() {
                   )}
                   fill={isActive && href === '/wishlist' ? 'currentColor' : 'none'}
                 />
-                {isCart && cartCount > 0 && (
+                {isCart && cartCount !== 0 && (
                   <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 bg-primary-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
                     {cartCount > 99 ? '99+' : cartCount}
                   </span>

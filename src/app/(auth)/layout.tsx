@@ -4,6 +4,13 @@ import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'GokaFood – Sign In or Join',
+  description: 'Login to your GokaFood account or create a new account to order food from your favorite restaurants. Fast, secure, and convenient.',
+  keywords: ['login', 'sign up', 'create account', 'GokaFood account', 'food delivery account'],
+  openGraph: {
+    title: 'GokaFood – Authentication',
+    description: 'Login or create your GokaFood account to start ordering food.',
+    type: 'website',
+  },
 };
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {

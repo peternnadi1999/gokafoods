@@ -45,7 +45,7 @@ export default function FoodCard({ food }: FoodCardProps) {
       <div className="food-card flex items-center gap-3 p-3 hover:shadow-card-hover transition-shadow duration-200">
 
         {/* Image */}
-        <div className="relative w-[88px] h-[80px] rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+        <div className="relative w-[88px] h-[89px] rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
           <Image
             src={food.productImage}
             alt={food.productName}
@@ -77,7 +77,7 @@ export default function FoodCard({ food }: FoodCardProps) {
                 size={11}
                 className={food.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-300'}
               />
-              <span className="text-xs text-gray-500 font-roboto">
+              <span className="text-[10px] text-gray-500 font-roboto">
                 {food.rating ? food.rating.toFixed(1) : 'Not Rated'}
               </span>
             </div>

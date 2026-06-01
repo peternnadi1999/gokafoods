@@ -60,33 +60,83 @@ const nextConfig = {
         hostname: '**',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
-  // headers: async () => [
-  //   {
-      // source: '/(.*)',
-      // headers: [
-      //   { key: 'X-Content-Type-Options', value: 'nosniff' },
-      //   { key: 'X-Frame-Options', value: 'DENY' },
-      //   { key: 'X-XSS-Protection', value: '1; mode=block' },
-      //   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-      //   {
-      //     key: 'Permissions-Policy',
-      //     value: 'camera=(), microphone=(), geolocation=(self)',
-      //   },
-        // {
-        //   key: 'Content-Security-Policy',
-        //   value: [
-        //     "default-src 'self'",
-        //     "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-        //     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        //     "font-src 'self' https://fonts.gstatic.com",
-        //     "img-src 'self' data: https:",
-        //     "connect-src 'self' https:",
-        //   ].join('; '),
-        // },
-      // ],
-  //   },
-  // ],
+  
+  // SEO and Performance Headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          // Security headers
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          
+          // Performance headers
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          
+          // SEO headers
+          { key: 'Content-Language', value: 'en-NG' },
+        ],
+      },
+      {
+        source: '/sitemap.xml',
+        headers: [
+          { key: 'Content-Type', value: 'application/xml' },
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
+      {
+        source: '/robots.txt',
+        headers: [
+          { key: 'Content-Type', value: 'text/plain' },
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
+    ];
+  },
+
+  // Redirects for old URLs
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/discover',
+        permanent: true,
+      },
+    ];
+  },
+
+  // Rewrites for clean URLs
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/sitemap.xml',
+          destination: '/api/sitemap',
+        },
+        {
+          source: '/robots.txt',
+          destination: '/api/robots',
+        },
+      ],
+    };
+  },
+
+  // Logging
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+
+  // Experimental features for better performance
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
 };
 
 module.exports = withPWA(nextConfig);

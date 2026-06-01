@@ -10,6 +10,18 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/utils';
 import Image from 'next/image';
 import { useForgotPassword } from '@/lib/hooks/use-api';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Forgot Password – GokaFood',
+  description: 'Reset your GokaFood password. Enter your email to receive a password reset link.',
+  keywords: ['forgot password', 'password reset', 'GokaFood account', 'recover account'],
+  openGraph: {
+    title: 'Reset Your Password',
+    description: 'Recover your GokaFood account access.',
+    type: 'website',
+  },
+};
 
 const schema = z.object({ userEmail: z.string().email('Enter a valid email address'), platform: z.enum(['web', 'app']).default('web'), });
 type FormData = z.infer<typeof schema>;

@@ -5,6 +5,21 @@ import { ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Welcome to GokaFood',
+  description: 'Fast and convenient food delivery at your fingertips. Order from top restaurants and enjoy quick delivery. Download GokaFood now.',
+  keywords: ['food delivery', 'order food', 'quick delivery', 'GokaFood', 'restaurants'],
+  openGraph: {
+    title: 'Welcome to GokaFood',
+    description: 'Start ordering your favorite meals from top restaurants with GokaFood.',
+    type: 'website',
+    images: [
+      {
+        url: 'https://gokafood.com/images/gokafood.jpeg',
+        width: 1200,
+        height: 630,
+        alt: 'GokaFood - Food Delivery',
+      },
+    ],
+  },
 };
 
 export default function WelcomePage() {

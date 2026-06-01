@@ -11,6 +11,18 @@ import { toast } from 'sonner';
 import { useSignup } from '@/lib/hooks/use-api';
 import { getErrorMessage } from '@/lib/utils';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Sign Up – GokaFood',
+  description: 'Create a new GokaFood account to order food from top restaurants. Quick registration with email and phone verification.',
+  keywords: ['GokaFood signup', 'create account', 'register', 'new user', 'food delivery registration'],
+  openGraph: {
+    title: 'Create Your GokaFood Account',
+    description: 'Join GokaFood and start ordering from your favorite restaurants today.',
+    type: 'website',
+  },
+};
 
 const schema = z.object({
   userName: z.string().min(2, 'Full name is required'),
