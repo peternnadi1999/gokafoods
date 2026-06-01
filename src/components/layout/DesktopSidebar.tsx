@@ -180,14 +180,14 @@ export default function DesktopSidebar() {
                 </p>
                 <p className="text-gray-400 text-xs font-roboto truncate">{user.userEmail}</p>
               </div>
-              <button className="w-7 relative h-7 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <Link href="/notifications" className="w-7 cursor-pointer relative h-7 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
                 <Bell size={14} className="text-gray-500" />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
-              </button>
+              </Link>
              </div>
 
             {/* Logout */}
