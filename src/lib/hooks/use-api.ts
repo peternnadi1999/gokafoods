@@ -263,7 +263,7 @@ export function useAddToCart() {
 		}) => cartService.addItem(productId, quantity).then((r) => r.data),
 		onSuccess: async (updated) => {
 			toast.success(updated.message || `Item added to cart 🛒`);
-			
+
 			queryClient.setQueryData(QUERY_KEYS.CART, updated);
 			await queryClient.invalidateQueries({
 				queryKey: QUERY_KEYS.CART,
@@ -374,6 +374,36 @@ export function useInitiateOrder() {
 }
 
 // ──────────────────────────────────────────────
+// NOTIFICATION SERVICES
+// ──────────────────────────────────────────────
+export function useNotifications() {
+	return useQuery({
+		queryKey: QUERY_KEYS.NOTIFICATIONS,
+		queryFn: () =>
+			notificationService.getNotifications().then((r: any) => { console.log("Fetched notifications:", r.data); return r.data;}),
+	});
+}
+
+export function useUnreadNotificationCount() {
+	return useQuery({
+		queryKey: QUERY_KEYS.UNREAD_NOTIFICATION_COUNT,
+		queryFn: async () => {
+			return notificationService.getUnreadCount().then((r: any) => r.data);
+		},
+	});
+}
+
+export function useMarkNotificationAsRead() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (broadcastId: string) =>
+			notificationService.markAsRead(broadcastId).then((r: any) => r.data),
+		onSuccess: () =>
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.NOTIFICATIONS }),
+	});
+}
+
+// ──────────────────────────────────────────────
 // WISHLIST
 // ──────────────────────────────────────────────
 export function useWishlist() {
@@ -400,7 +430,6 @@ export function useToggleWishlist() {
 				: wishlistService.addToWishlist(productId),
 		onSuccess: () =>
 			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.WISHLIST }),
-			
 	});
 }
 
@@ -412,36 +441,6 @@ export function useStampCount() {
 		queryKey: QUERY_KEYS.STAMP_COUNT,
 		queryFn: () =>
 			stampService.getStampCount().then((r: any) => r.data.userData),
-	});
-}
-
-// ──────────────────────────────────────────────
-// NOTIFICATION SERVICES
-// ──────────────────────────────────────────────
-export function useNotifications() {
-	return useQuery({
-		queryKey: QUERY_KEYS.NOTIFICATIONS,
-		queryFn: () =>
-			notificationService.getNotifications().then((r: any) => r.data.data),
-	});
-}
-
-export function useUnreadNotificationCount() {
-	return useQuery({
-		queryKey: QUERY_KEYS.UNREAD_NOTIFICATION_COUNT,
-		queryFn: async () => {
-			return notificationService.getUnreadCount().then((r: any) => r.data);
-		},
-	});
-}
-
-export function useMarkNotificationAsRead() {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: (broadcastId: string) =>
-			notificationService.markAsRead(broadcastId).then((r: any) => r.data),
-		onSuccess: () =>
-			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.NOTIFICATIONS }),
 	});
 }
 

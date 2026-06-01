@@ -1,4 +1,4 @@
- 'use client';
+"use client";
 
 import { useMemo, type ReactNode } from 'react';
 import { usePaystackPayment } from 'react-paystack';
