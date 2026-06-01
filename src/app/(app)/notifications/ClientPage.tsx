@@ -82,7 +82,25 @@ export default function NotificationsPage() {
 	if (isLoading) {
 		return (
 			<div className="min-h-screen bg-gray-50 px-5 lg:px-8 py-10 max-w-screen-xl mx-auto">
-				<p className="text-gray-500">Loading notifications...</p>
+				<div className="mb-8 border-b border-gray-200 pb-5 space-y-3">
+					<div className="h-8 w-56 skeleton rounded" />
+					<div className="h-4 w-72 skeleton rounded" />
+				</div>
+
+				<div className="space-y-4">
+					{[1, 2, 3].map((item) => (
+						<div key={item} className="rounded-3xl p-5 shadow-card border border-gray-200 bg-white">
+							<div className="flex items-start justify-between gap-4">
+								<div className="min-w-0 space-y-3">
+									<div className="h-4 w-40 skeleton rounded" />
+									<div className="h-3 w-48 skeleton rounded" />
+								</div>
+								<div className="h-8 w-24 skeleton rounded" />
+							</div>
+							<div className="mt-3 h-3 w-32 skeleton rounded" />
+						</div>
+					))}
+				</div>
 			</div>
 		);
 	}
