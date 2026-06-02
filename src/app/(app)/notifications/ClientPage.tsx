@@ -2,6 +2,7 @@
 
 import { useNotifications, useMarkNotificationAsRead } from '@/lib/hooks/use-api';
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
 const ICON_MAP: Record<string, string> = {
 	HOT: '🔥',
@@ -11,7 +12,7 @@ const ICON_MAP: Record<string, string> = {
 	ALERT: '🚨',
 };
 
-function getNotificationIcon(notification: any) {
+export function getNotificationIcon(notification: any) {
 	const iconKey =
 		notification.icon ||
 		notification.type ||
@@ -25,7 +26,7 @@ function getNotificationIcon(notification: any) {
 	return ICON_MAP[normalized] || String(iconKey);
 }
 
-function formatNotificationTimestamp(value: string | number | Date) {
+export function formatNotificationTimestamp(value: string | number | Date) {
 	const date = new Date(value);
 	if (Number.isNaN(date.getTime())) return '';
 
@@ -60,8 +61,7 @@ function formatNotificationTimestamp(value: string | number | Date) {
 export default function NotificationsPage() {
 	const { data: notifications, isLoading } = useNotifications();
 	const markAsReadMutation = useMarkNotificationAsRead();
-
-	console.log('Notifications data:', notifications);
+	const router = useRouter();
 
 	const unreadCount = useMemo(
 		() =>
@@ -71,11 +71,26 @@ export default function NotificationsPage() {
 		[notifications]
 	);
 
+
 	const handleMarkAsRead = async (broadcastId: string) => {
-	try {
+		try {
 			await markAsReadMutation.mutateAsync(broadcastId);
 		} catch (error) {
 			console.error('Failed to mark notification as read:', error);
+		}
+	};
+
+	const handleOpen = async (notification: any) => {
+		try {
+			// mark as read before navigating to detail
+			if (!notification.read) {
+				await markAsReadMutation.mutateAsync(notification._id);
+			}
+			router.push(`/notifications/${notification._id}`);
+		} catch (error) {
+			console.error('Failed to open notification:', error);
+			// still navigate even on error to allow viewing
+			router.push(`/notifications/${notification._id}`);
 		}
 	};
 
@@ -126,21 +141,33 @@ export default function NotificationsPage() {
 					{notifications.map((notification: any) => (
 						<div
 							key={notification._id}
-							className={`rounded-3xl p-5 shadow-card border ${notification.read ? 'border-gray-200 bg-white' : 'border-primary-200 bg-primary-50/50'}`}
+							role="button"
+							tabIndex={0}
+							className={`rounded-3xl p-5 shadow-card border ${notification.read ? 'border-gray-200 bg-white' : 'border-primary-200 bg-primary-50/50'} cursor-pointer`}
+							onClick={() => handleOpen(notification)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault();
+									handleOpen(notification);
+								}
+							}}
 						>
 							<div className="flex items-start justify-between gap-4">
 								<div className="min-w-0">
-										<p className="text-sm font-semibold text-gray-900 truncate">
-											{getNotificationIcon(notification) ? (
-												<span className="mr-2 inline-block">{getNotificationIcon(notification)}</span>
-											) : null}
-											{notification.title || 'Notification'}
-										</p>
-									<p className="mt-2 text-sm text-gray-600 leading-relaxed">{notification.description || 'No message content available.'}</p>
+									<p className="text-sm font-semibold text-gray-900 truncate">
+										{getNotificationIcon(notification) ? (
+											<span className="mr-2 inline-block">{getNotificationIcon(notification)}</span>
+										) : null}
+										{notification.title || 'Notification'}
+									</p>
+										<p className="mt-2 text-sm text-gray-600 leading-relaxed truncate">{notification.description || 'No message content available.'}</p>
 								</div>
 								<button
 									type="button"
-									onClick={() => handleMarkAsRead(notification._id)}
+									onClick={(e) => {
+										e.stopPropagation();
+										handleMarkAsRead(notification._id);
+									}}
 									className="text-xs font-semibold text-primary-600 hover:text-primary-700"
 									disabled={notification.read}
 								>
@@ -151,7 +178,7 @@ export default function NotificationsPage() {
 									<p className="mt-3 text-xs text-gray-400">{formatNotificationTimestamp(notification.createdAt)}</p>
 								)}
 							</div>
-						))}
+					))}
 					</div>
 			)}
 		</div>

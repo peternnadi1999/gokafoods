@@ -65,11 +65,12 @@ export const setTokens = (token: string) => {
     expires: 1, // 1 day
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
+    path: '/',
   });
 };
 
 export const clearTokens = () => {
-  Cookies.remove(ACCESS_TOKEN_KEY);
+  Cookies.remove(ACCESS_TOKEN_KEY, { path: '/' });
 };
 
 export const getAccessToken = () => Cookies.get(ACCESS_TOKEN_KEY);

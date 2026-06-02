@@ -83,7 +83,7 @@ export default function FoodCard({ food }: FoodCardProps) {
             </div>
             <div className="flex items-center gap-1 text-gray-400">
               {distance !== null && time !== null && (
-                <span className="text-xs font-roboto">
+                <span className="text-[10px] font-roboto">
                   {distance.toFixed(2)} km · {Math.round(time)} mins
                 </span>
               )}

@@ -65,7 +65,7 @@ export default function DesktopSidebar() {
   const handleLogout = async () => {
     await logout();
     toast.success('Logged out');
-    router.push('/login');
+    router.replace('/login');
   };
 
   const isActive = (href: string) =>
